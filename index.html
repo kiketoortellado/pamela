@@ -136,12 +136,17 @@
     .placeholder .ph-icon { font-size:2.8rem; opacity:.45; }
     .file-input { position:absolute; inset:0; opacity:0; cursor:pointer; }
 
-    /* ── music ── */
-    .music-bar { position:fixed; bottom:20px; left:50%; transform:translateX(-50%); z-index:999; background:rgba(10,10,10,.93); border:1px solid rgba(212,168,75,.3); border-radius:60px; padding:10px 22px; display:flex; align-items:center; gap:14px; box-shadow:0 4px 30px rgba(0,0,0,.5); white-space:nowrap; }
-    .music-note { font-size:1.2rem; animation:spin 3s linear infinite; color:var(--gold); }
-    @keyframes spin { to{transform:rotate(360deg)} }
-    .music-lbl { font-family:'Cormorant Garamond',serif; font-size:.9rem; color:rgba(212,168,75,.65); }
-    .music-status { font-family:'Cormorant Garamond',serif; font-size:.8rem; font-style:italic; color:rgba(212,168,75,.4); }
+    /* ── music top indicator ── */
+    .music-top { position:fixed; top:0; left:0; right:0; z-index:999; display:flex; align-items:center; justify-content:center; gap:8px; padding:7px 0; background:linear-gradient(180deg,rgba(0,0,0,.7),transparent); pointer-events:none; }
+    .music-top span { font-family:'Cormorant Garamond',serif; font-size:.8rem; font-style:italic; color:rgba(212,168,75,.5); letter-spacing:.15em; }
+    .bars { display:flex; align-items:flex-end; gap:2px; height:14px; }
+    .bar { width:3px; background:rgba(212,168,75,.5); border-radius:2px; animation:eq .8s ease-in-out infinite alternate; }
+    .bar:nth-child(1){ height:6px;  animation-delay:0s; }
+    .bar:nth-child(2){ height:12px; animation-delay:.15s; }
+    .bar:nth-child(3){ height:8px;  animation-delay:.3s; }
+    .bar:nth-child(4){ height:14px; animation-delay:.1s; }
+    .bar:nth-child(5){ height:5px;  animation-delay:.25s; }
+    @keyframes eq { from{transform:scaleY(.3)} to{transform:scaleY(1)} }
 
     /* ── footer ── */
     footer { text-align:center; padding:40px 20px 110px; position:relative; z-index:1; }
@@ -205,11 +210,10 @@
   <p class="footer-sub">Tu presencia será lo más valioso de este día</p>
 </footer>
 
-<!-- ═══ MUSIC BAR ═══ -->
-<div class="music-bar">
-  <span class="music-note">♪</span>
-  <span class="music-lbl">Música</span>
-  <span class="music-status" id="music-status">cargando...</span>
+<!-- ═══ MUSIC TOP ═══ -->
+<div class="music-top">
+  <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
+  <span>♪ música</span>
 </div>
 <audio id="audio" src="img/musica.mp3" loop></audio>
 
@@ -272,16 +276,12 @@
 
 /* música auto-play */
 (function(){
-  const audio=document.getElementById('audio'), status=document.getElementById('music-status');
-  function tryPlay(){
-    audio.play()
-      .then(()=>{ status.textContent='♪ reproduciendo'; })
-      .catch(()=>{ status.textContent='toca para activar'; document.addEventListener('click',()=>audio.play().then(()=>status.textContent='♪ reproduciendo'),{once:true}); });
-  }
+  const audio=document.getElementById('audio');
+  function tryPlay(){ audio.play().catch(()=>{ document.addEventListener('click',()=>audio.play(),{once:true}); }); }
   audio.addEventListener('canplaythrough',tryPlay,{once:true});
-  audio.addEventListener('error',()=>{ status.textContent='agrega musica.mp3 en /img'; });
   tryPlay();
 })();
 </script>
 </body>
 </html>
+
