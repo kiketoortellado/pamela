@@ -215,7 +215,7 @@
   <div class="bars"><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div><div class="bar"></div></div>
   <span>♪ música</span>
 </div>
-<audio id="audio" src="img/musica.mp3" loop></audio>
+<audio id="audio" src="img/musica.mp3" loop autoplay muted></audio>
 
 <script>
 /* partículas */
@@ -274,12 +274,19 @@
   tick(); setInterval(tick,1000);
 })();
 
-/* música auto-play */
+/* música auto-play — truco muted para bypasear bloqueo del navegador */
 (function(){
-  const audio=document.getElementById('audio');
-  function tryPlay(){ audio.play().catch(()=>{ document.addEventListener('click',()=>audio.play(),{once:true}); }); }
-  audio.addEventListener('canplaythrough',tryPlay,{once:true});
-  tryPlay();
+  const audio = document.getElementById('audio');
+  audio.muted = true;
+  audio.play().then(() => {
+    audio.muted = false;
+  }).catch(() => {
+    // si aun así falla, arranca al primer toque
+    document.addEventListener('click', () => {
+      audio.muted = false;
+      audio.play();
+    }, { once: true });
+  });
 })();
 </script>
 </body>
